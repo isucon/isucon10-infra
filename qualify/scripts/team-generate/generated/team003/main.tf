@@ -45,8 +45,13 @@ resource "lovi_virtual_machine" "problem-team003" {
   vcpus = 1
   memory_kib = 2 * 1024 * 1024
   root_volume_gb = 10
-  source_image_id = "f099f816-424f-489a-93bd-738505cd3539"
+  source_image_id = "be1069ee-b147-49fd-b7dd-65639f79012d"
   hypervisor_name = "isucn0001"
+
+  read_bytes_sec = 100 * 1000 * 1000
+  write_bytes_sec = 100 * 1000 * 1000
+  read_iops_sec = 200
+  write_iops_sec = 200
 }
 
 resource "lovi_interface_attachment" "problem-team003" {
@@ -82,17 +87,17 @@ resource "lovi_virtual_machine" "bench-team003" {
   vcpus = 2
   memory_kib = 16 * 1024 * 1024
   root_volume_gb = 10
-  source_image_id = "2247a5d9-0ecb-4788-b148-dfb3279c2156"
+  source_image_id = "be1069ee-b147-49fd-b7dd-65639f79012d"
   hypervisor_name = "isucn0001"
 
   depends_on = [
     lovi_virtual_machine.problem-team003,
   ]
 
-  //read_bytes_sec = 1 * 1000 * 1000 * 1000
-  //write_bytes_sec = 1000000000
-  //read_iops_sec = 2000
-  //write_iops_sec = 2000
+  read_bytes_sec = 100 * 1000 * 1000
+  write_bytes_sec = 100 * 1000 * 1000
+  read_iops_sec = 200
+  write_iops_sec = 200
 }
 
 resource "lovi_interface_attachment" "bench-team003" {

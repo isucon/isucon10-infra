@@ -18,6 +18,7 @@ const (
 
 var (
 	binaryTerraform = "terraform"
+	scheduled       = map[int]string{}
 )
 
 // templateTeamNetwork is template of resource that one of team
@@ -76,8 +77,13 @@ resource "lovi_virtual_machine" "problem-team%s" {
   vcpus = 1
   memory_kib = 2 * 1024 * 1024
   root_volume_gb = 10
-  source_image_id = "f099f816-424f-489a-93bd-738505cd3539"
-  hypervisor_name = "isucn0001"
+  source_image_id = "30afbf08-a9d2-4245-ab7f-a4c1a83bf062"
+  hypervisor_name = "%s"
+
+  read_bytes_sec = 100 * 1000 * 1000
+  write_bytes_sec = 100 * 1000 * 1000
+  read_iops_sec = 200
+  write_iops_sec = 200
 }
 
 resource "lovi_interface_attachment" "problem-team%s" {
@@ -115,17 +121,17 @@ resource "lovi_virtual_machine" "bench-team%s" {
   vcpus = 2
   memory_kib = 16 * 1024 * 1024
   root_volume_gb = 10
-  source_image_id = "2247a5d9-0ecb-4788-b148-dfb3279c2156"
-  hypervisor_name = "isucn0001"
+  source_image_id = "2c56bd7b-f594-43f7-baa0-6863d9eb4348"
+  hypervisor_name = "%s"
 
   depends_on = [
     lovi_virtual_machine.problem-team%s,
   ]
 
-  //read_bytes_sec = 1 * 1000 * 1000 * 1000
-  //write_bytes_sec = 1000000000
-  //read_iops_sec = 2000
-  //write_iops_sec = 2000
+  read_bytes_sec = 100 * 1000 * 1000
+  write_bytes_sec = 100 * 1000 * 1000
+  read_iops_sec = 200
+  write_iops_sec = 200
 }
 
 resource "lovi_interface_attachment" "bench-team%s" {
@@ -184,21 +190,37 @@ func main() {
 	// truncate
 	now := time.Now()
 	if err := os.Rename("generated", fmt.Sprintf("generated.%d", now.Unix())); err != nil {
+		if !os.IsNotExist(err) {
+			log.Fatal(err)
+		}
+	}
+
+	doSchedule()
+
+	if err := generateTeam(3); err != nil {
 		log.Fatal(err)
 	}
-
-	for i := 1; i < numTeam+1; i++ {
-		teamID := fmt.Sprintf("%03d", i)
-		if err := writeFile(i, teamID); err != nil {
-			log.Fatal(err)
-		}
-
-		if err := terraformInit(teamID); err != nil {
-			log.Fatal(err)
-		}
-	}
+	//
+	//for i := 100; i < 201; i++ {
+	//	if err := generateTeam(i); err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}
 
 	log.Println("generated")
+}
+
+func generateTeam(teamid int) error {
+	teamID := fmt.Sprintf("%03d", teamid)
+	if err := writeFile(teamid, teamID); err != nil {
+		return fmt.Errorf("failed to write file: %w", err)
+	}
+
+	if err := terraformInit(teamID); err != nil {
+		return fmt.Errorf("failed to terraform init: %w", err)
+	}
+
+	return nil
 }
 
 func terraformInit(teamID string) error {
@@ -254,15 +276,37 @@ func generateNetwork(id int, teamID string) string {
 
 func generateProblem(id int, teamID string) string {
 	network := fmt.Sprintf(templateProblemNetwork, teamID, teamID, id, teamID, teamID, teamID)
-	vm := fmt.Sprintf(templateProblemVM, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID)
+	vm := fmt.Sprintf(templateProblemVM, teamID, teamID, scheduled[id], teamID, teamID, teamID, teamID, teamID, teamID, teamID)
 
 	return strings.Join([]string{network, vm}, "")
 }
 
 func generateBench(id int, teamID string) string {
-	return fmt.Sprintf(templateBench, teamID, teamID, id, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID)
+	return fmt.Sprintf(templateBench, teamID, teamID, id, teamID, teamID, teamID, teamID, teamID, scheduled[id], teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID)
 }
 
 func generateBastion(id int, teamID string) string {
 	return fmt.Sprintf(templateBastion, teamID, teamID, id, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID)
+}
+
+const (
+	CountHostCore = 94
+	TeamCore      = 4
+	CountTeam     = 500
+)
+
+func doSchedule() {
+	NumberCN := 1
+	core := CountHostCore // のこり
+
+	for i := 1; i <= CountTeam; i++ {
+		if core-TeamCore < 0 {
+			// 在庫切れなので新しいCNを出す
+			NumberCN++
+			core = CountHostCore
+		}
+
+		core = core - TeamCore
+		scheduled[i] = fmt.Sprintf("isucn%04d", NumberCN)
+	}
 }

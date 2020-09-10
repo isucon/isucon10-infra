@@ -38,6 +38,12 @@ resource "lovi_lease" "problem-team001" {
 
   depends_on = [lovi_address.problem-team001]
 }
+resource "lovi_cpu_pinning_group" "team001" {
+  name = "team001"
+  count_of_core = 4
+  hypervisor_name = "isucn0001"
+}
+
 resource "lovi_virtual_machine" "problem-team001" {
   count = var.node_count
 
@@ -45,8 +51,19 @@ resource "lovi_virtual_machine" "problem-team001" {
   vcpus = 1
   memory_kib = 2 * 1024 * 1024
   root_volume_gb = 10
-  source_image_id = "f099f816-424f-489a-93bd-738505cd3539"
+  source_image_id = "30afbf08-a9d2-4245-ab7f-a4c1a83bf062"
   hypervisor_name = "isucn0001"
+
+  read_bytes_sec = 100 * 1000 * 1000
+  write_bytes_sec = 100 * 1000 * 1000
+  read_iops_sec = 200
+  write_iops_sec = 200
+
+  cpu_pinning_group_name = lovi_cpu_pinning_group.team001.name
+
+  depends_on = [
+    lovi_cpu_pinning_group.team001
+  ]
 }
 
 resource "lovi_interface_attachment" "problem-team001" {
@@ -79,20 +96,23 @@ resource "lovi_lease" "bench-team001" {
 
 resource "lovi_virtual_machine" "bench-team001" {
   name = "team001-bench"
-  vcpus = 2
+  vcpus = 1
   memory_kib = 16 * 1024 * 1024
   root_volume_gb = 10
-  source_image_id = "2247a5d9-0ecb-4788-b148-dfb3279c2156"
+  source_image_id = "2c56bd7b-f594-43f7-baa0-6863d9eb4348"
   hypervisor_name = "isucn0001"
 
   depends_on = [
     lovi_virtual_machine.problem-team001,
+    lovi_cpu_pinning_group.team001
   ]
 
-  //read_bytes_sec = 1 * 1000 * 1000 * 1000
-  //write_bytes_sec = 1000000000
-  //read_iops_sec = 2000
-  //write_iops_sec = 2000
+  read_bytes_sec = 100 * 1000 * 1000
+  write_bytes_sec = 100 * 1000 * 1000
+  read_iops_sec = 200
+  write_iops_sec = 200
+
+  cpu_pinning_group_name = lovi_cpu_pinning_group.team001.name
 }
 
 resource "lovi_interface_attachment" "bench-team001" {

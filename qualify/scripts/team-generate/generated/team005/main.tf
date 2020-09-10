@@ -1,6 +1,6 @@
 resource "lovi_subnet" "team005" {
   name = "team005"
-  vlan_id = 005 + 1000
+  vlan_id = 1000 + 5
   network = "10.160.5.0/24"
   start = "10.160.5.100"
   end = "10.160.5.200"
@@ -11,7 +11,7 @@ resource "lovi_subnet" "team005" {
 
 resource "lovi_bridge" "team005" {
   name = "team005"
-  vlan_id = 005 + 1000
+  vlan_id = 1000 + 5
 
   depends_on = [lovi_subnet.team005]
 }
@@ -28,7 +28,7 @@ resource "lovi_address" "problem-team005" {
   count = var.node_count
 
   subnet_id = lovi_subnet.team005.id
-  fixed_ip = "10.160.005.${101 + count.index}"
+  fixed_ip = "10.160.5.${101 + count.index}"
 }
 
 resource "lovi_lease" "problem-team005" {
@@ -38,6 +38,12 @@ resource "lovi_lease" "problem-team005" {
 
   depends_on = [lovi_address.problem-team005]
 }
+resource "lovi_cpu_pinning_group" "team005" {
+  name = "team005"
+  count_of_core = 4
+  hypervisor_name = "isucn0001"
+}
+
 resource "lovi_virtual_machine" "problem-team005" {
   count = var.node_count
 
@@ -45,13 +51,19 @@ resource "lovi_virtual_machine" "problem-team005" {
   vcpus = 1
   memory_kib = 2 * 1024 * 1024
   root_volume_gb = 10
-  source_image_id = "f099f816-424f-489a-93bd-738505cd3539"
+  source_image_id = "30afbf08-a9d2-4245-ab7f-a4c1a83bf062"
   hypervisor_name = "isucn0001"
 
-  read_bytes_sec = 1000000000
-  write_bytes_sec = 1000000000
-  read_iops_sec = 2000
-  write_iops_sec = 2000
+  read_bytes_sec = 100 * 1000 * 1000
+  write_bytes_sec = 100 * 1000 * 1000
+  read_iops_sec = 200
+  write_iops_sec = 200
+
+  cpu_pinning_group_name = lovi_cpu_pinning_group.team005.name
+
+  depends_on = [
+    lovi_cpu_pinning_group.team005
+  ]
 }
 
 resource "lovi_interface_attachment" "problem-team005" {
@@ -59,8 +71,9 @@ resource "lovi_interface_attachment" "problem-team005" {
 
   virtual_machine_id = lovi_virtual_machine.problem-team005[count.index].id
   bridge_id = lovi_bridge.team005.id
-  //average = 12500 // NOTE(whywaita): 100Mbps
-  average = 37500 // NOTE(whywaita): 300Mbps
+  //average = 12500 // NOTE: 100Mbps
+  //average = 37500 // NOTE: 300Mbps
+  average = 125000 // NOTE: 1Gbps
   name = "t005-${format("%03d", count.index + 1)}"
   lease_id = lovi_lease.problem-team005[count.index].id
 
@@ -72,7 +85,7 @@ resource "lovi_interface_attachment" "problem-team005" {
 
 resource "lovi_address" "bench-team005" {
   subnet_id = lovi_subnet.team005.id
-  fixed_ip = "10.160.005.104"
+  fixed_ip = "10.160.5.104"
 }
 
 resource "lovi_lease" "bench-team005" {
@@ -83,26 +96,29 @@ resource "lovi_lease" "bench-team005" {
 
 resource "lovi_virtual_machine" "bench-team005" {
   name = "team005-bench"
-  vcpus = 2
+  vcpus = 1
   memory_kib = 16 * 1024 * 1024
   root_volume_gb = 10
-  source_image_id = "2247a5d9-0ecb-4788-b148-dfb3279c2156"
+  source_image_id = "2c56bd7b-f594-43f7-baa0-6863d9eb4348"
   hypervisor_name = "isucn0001"
 
   depends_on = [
     lovi_virtual_machine.problem-team005,
+    lovi_cpu_pinning_group.team005
   ]
 
-  read_bytes_sec = 1 * 1000 * 1000 * 1000
-  write_bytes_sec = 1000000000
-  read_iops_sec = 2000
-  write_iops_sec = 2000
+  read_bytes_sec = 100 * 1000 * 1000
+  write_bytes_sec = 100 * 1000 * 1000
+  read_iops_sec = 200
+  write_iops_sec = 200
+
+  cpu_pinning_group_name = lovi_cpu_pinning_group.team005.name
 }
 
 resource "lovi_interface_attachment" "bench-team005" {
   virtual_machine_id = lovi_virtual_machine.bench-team005.id
   bridge_id = lovi_bridge.team005.id
-  average = 12500
+  average = 12500 // NOTE: 100Mbps
   name = "t005-be"
   lease_id = lovi_lease.bench-team005.id
 
@@ -114,7 +130,7 @@ resource "lovi_interface_attachment" "bench-team005" {
 
 resource "lovi_address" "bastion-team005" {
   subnet_id = lovi_subnet.team005.id
-  fixed_ip = "10.160.005.100"
+  fixed_ip = "10.160.5.100"
 }
 
 resource "lovi_lease" "bastion-team005" {
@@ -139,7 +155,7 @@ resource "lovi_virtual_machine" "bastion-team005" {
 resource "lovi_interface_attachment" "bastion-team005" {
   virtual_machine_id = lovi_virtual_machine.bastion-team005.id
   bridge_id = lovi_bridge.team005.id
-  average = 12500
+  average = 125000 // NOTE: 1Gbps
   name = "t005-ba"
   lease_id = lovi_lease.bastion-team005.id
 

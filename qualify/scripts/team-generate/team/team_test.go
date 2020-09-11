@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/go-test/deep"
-	"github.com/whywaita/satelit/pkg/api/team"
+	"github.com/isucon/isucon10-infra/qualify/scripts/team-generate/team"
 )
 
 func TestGetTeamID(t *testing.T) {

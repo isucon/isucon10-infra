@@ -34,21 +34,6 @@ func main() {
 
 	doSchedule()
 
-	for i := 1; i < 501; i++ {
-		if scheduled[i] == "isucn0004" {
-			if err := generateTeam(i); err != nil {
-				log.Fatal(err)
-			}
-		}
-	}
-
-	//
-	//for i := 100; i < 201; i++ {
-	//	if err := generateTeam(i); err != nil {
-	//		log.Fatal(err)
-	//	}
-	//}
-
 	for teamID := 1; teamID <= maxTeamID; teamID++ {
 		if !isAvailableTeamID(teamID) {
 			continue
@@ -145,7 +130,29 @@ func generateBench(id int, teamID, teamSubnet string) string {
 }
 
 func generateBastion(id int, teamID, teamSubnet string) string {
-	return fmt.Sprintf(templateBastion, teamID, teamID, teamSubnet, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID)
+	m := map[string]interface{}{
+		"TeamID":     teamID,
+		"TeamSubnet": teamSubnet,
+		"BastionID":  "100",
+	}
+
+	bastion100 := Tprintf(templateBastion, m)
+
+	m = map[string]interface{}{
+		"TeamID":     teamID,
+		"TeamSubnet": teamSubnet,
+		"BastionID":  "200",
+	}
+	bastion200 := Tprintf(templateBastion, m)
+
+	return strings.Join([]string{bastion100, bastion200}, "")
+}
+
+func Tprintf(format string, params map[string]interface{}) string {
+	for key, val := range params {
+		format = strings.Replace(format, "%{"+key+"}s", fmt.Sprintf("%s", val), -1)
+	}
+	return format
 }
 
 const (
@@ -324,19 +331,19 @@ resource "lovi_interface_attachment" "bench-team%s" {
 
 // templateBastion is template of resource for bastion
 const templateBastion = `
-resource "lovi_address" "bastion-team%s" {
-  subnet_id = lovi_subnet.team%s.id
-  fixed_ip = "%s.100"
+resource "lovi_address" "bastion%{BastionID}s-team%{TeamID}s" {
+  subnet_id = lovi_subnet.team%{TeamID}s.id
+  fixed_ip = "%{TeamSubnet}s.%{BastionID}s"
 }
 
-resource "lovi_lease" "bastion-team%s" {
-  address_id = lovi_address.bastion-team%s.id
+resource "lovi_lease" "bastion%{BastionID}s-team%{TeamID}s" {
+  address_id = lovi_address.bastion%{BastionID}s-team%{TeamID}s.id
 
-  depends_on = [lovi_address.bastion-team%s]
+  depends_on = [lovi_address.bastion%{BastionID}s-team%{TeamID}s]
 }
 
-resource "lovi_virtual_machine" "bastion-team%s" {
-  name = "team%s-bastion"
+resource "lovi_virtual_machine" "bastion%{BastionID}s-team%{TeamID}s" {
+  name = "team%{TeamID}s-bastion%{BastionID}s"
   vcpus = 1
   memory_kib = 2 * 1024 * 1024
   root_volume_gb = 10
@@ -344,19 +351,19 @@ resource "lovi_virtual_machine" "bastion-team%s" {
   hypervisor_name = "isuadm0002"
 
   depends_on = [
-    lovi_virtual_machine.problem-team%s,
+    lovi_virtual_machine.problem-team%{TeamID}s,
   ]
 }
 
-resource "lovi_interface_attachment" "bastion-team%s" {
-  virtual_machine_id = lovi_virtual_machine.bastion-team%s.id
-  bridge_id = lovi_bridge.team%s.id
+resource "lovi_interface_attachment" "bastion%{BastionID}s-team%{TeamID}s" {
+  virtual_machine_id = lovi_virtual_machine.bastion%{BastionID}s-team%{TeamID}s.id
+  bridge_id = lovi_bridge.team%{TeamID}s.id
   average = 125000 // NOTE: 1Gbps
-  name = "t%s-ba"
-  lease_id = lovi_lease.bastion-team%s.id
+  name = "t%{TeamID}s-ba%{BastionID}s"
+  lease_id = lovi_lease.bastion%{BastionID}s-team%{TeamID}s.id
 
   depends_on = [
-    lovi_virtual_machine.bastion-team%s,
-    lovi_lease.bastion-team%s
+    lovi_virtual_machine.bastion%{BastionID}s-team%{TeamID}s,
+    lovi_lease.bastion%{BastionID}s-team%{TeamID}s
   ]
 }`

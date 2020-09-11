@@ -33,8 +33,10 @@ func main() {
 	doSchedule()
 
 	for i := 1; i < 501; i++ {
-		if err := generateTeam(i); err != nil {
-			log.Fatal(err)
+		if scheduled[i] == "isucn0004" {
+			if err := generateTeam(i); err != nil {
+				log.Fatal(err)
+			}
 		}
 	}
 
@@ -221,7 +223,7 @@ resource "lovi_virtual_machine" "problem-team%s" {
   vcpus = 1
   memory_kib = 2 * 1024 * 1024
   root_volume_gb = 10
-  source_image_id = "30afbf08-a9d2-4245-ab7f-a4c1a83bf062"
+  source_image_id = "be1069ee-b147-49fd-b7dd-65639f79012d"
   hypervisor_name = "%s"
 
   read_bytes_sec = 100 * 1000 * 1000
@@ -271,7 +273,7 @@ resource "lovi_virtual_machine" "bench-team%s" {
   vcpus = 1
   memory_kib = 16 * 1024 * 1024
   root_volume_gb = 10
-  source_image_id = "2c56bd7b-f594-43f7-baa0-6863d9eb4348"
+  source_image_id = "be1069ee-b147-49fd-b7dd-65639f79012d"
   hypervisor_name = "%s"
 
   depends_on = [

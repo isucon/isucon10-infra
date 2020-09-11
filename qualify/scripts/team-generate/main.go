@@ -75,9 +75,9 @@ func generateTeam(teamID int) error {
 		return fmt.Errorf("failed to write file: %w", err)
 	}
 
-	//if err := terraformInit(teamIDStr); err != nil {
-	//	return fmt.Errorf("failed to terraform init: %w", err)
-	//}
+	if err := terraformInit(teamIDStr); err != nil {
+		return fmt.Errorf("failed to terraform init: %w", err)
+	}
 
 	return nil
 }

@@ -8,10 +8,12 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/isucon/isucon10-infra/qualify/scripts/team-generate/team"
 )
 
 const (
-	numTeam       = 50
+	maxTeamID     = 576
 	generatedDir  = "generated"
 	tfFilePathTpl = generatedDir + "/team%s/main.tf"
 )
@@ -47,22 +49,33 @@ func main() {
 	//	}
 	//}
 
+	for teamID := 1; teamID <= maxTeamID; teamID++ {
+		if !isAvailableTeamID(teamID) {
+			continue
+		}
+		if err := generateTeam(teamID); err != nil {
+			log.Fatal(err)
+		}
+	}
+
 	log.Println("generated")
 }
 
-func generateTeam(teamid int) error {
-	base := 160
-	under := teamid % 100         // 下2桁
-	top := (teamid - under) / 100 // 百の位の数字
+func generateTeam(teamID int) error {
+	ipNet, err := team.GetTeamSubnet(teamID)
+	if err != nil {
+		return err
+	}
+	words := strings.Split(ipNet.String(), ".")
 
-	teamSubnet := fmt.Sprintf("10.%d.%d", base+top, under)
+	teamSubnet := strings.Join(words[:3], ".")
 
-	teamID := fmt.Sprintf("%03d", teamid)
-	if err := writeFile(teamid, teamID, teamSubnet); err != nil {
+	teamIDStr := fmt.Sprintf("%03d", teamID)
+	if err := writeFile(teamID, teamIDStr, teamSubnet); err != nil {
 		return fmt.Errorf("failed to write file: %w", err)
 	}
 
-	if err := terraformInit(teamID); err != nil {
+	if err := terraformInit(teamIDStr); err != nil {
 		return fmt.Errorf("failed to terraform init: %w", err)
 	}
 
@@ -136,9 +149,12 @@ func generateBastion(id int, teamID, teamSubnet string) string {
 }
 
 const (
+	// CountHostCore is number of cores per host
 	CountHostCore = 84
-	TeamCore      = 4
-	CountTeam     = 500
+	// TeamCore is number of cores per team
+	TeamCore = 4
+	// CountTeam is number of teams
+	CountTeam = maxTeamID
 )
 
 // 24 Node x 21 Team = 504 Teamなので、
@@ -149,7 +165,11 @@ func doSchedule() {
 	NumberCN := 1
 	core := CountHostCore // のこり
 
-	for i := 1; i <= CountTeam; i++ {
+	for teamID := 1; teamID <= CountTeam; teamID++ {
+		if !isAvailableTeamID(teamID) {
+			continue
+		}
+
 		if core-TeamCore < 0 {
 			// 在庫切れなので新しいCNを出す
 			NumberCN++
@@ -157,7 +177,7 @@ func doSchedule() {
 		}
 
 		core = core - TeamCore
-		scheduled[i] = fmt.Sprintf("isucn%04d", NumberCN)
+		scheduled[teamID] = fmt.Sprintf("isucn%04d", NumberCN)
 	}
 }
 

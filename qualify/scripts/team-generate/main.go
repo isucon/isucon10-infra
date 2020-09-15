@@ -2,12 +2,11 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
-	"time"
 
 	"github.com/isucon/isucon10-infra/qualify/scripts/team-generate/team"
 )
@@ -25,40 +24,55 @@ var (
 
 func main() {
 	// truncate
-	now := time.Now()
-	if err := os.Rename("generated", fmt.Sprintf("generated.%d", now.Unix())); err != nil {
-		if !os.IsNotExist(err) {
-			log.Fatal(err)
-		}
-	}
-
-	doSchedule()
-
-	for i := 1; i < 501; i++ {
-		if scheduled[i] == "isucn0004" {
-			if err := generateTeam(i); err != nil {
-				log.Fatal(err)
-			}
-		}
-	}
-
-	//
-	//for i := 100; i < 201; i++ {
-	//	if err := generateTeam(i); err != nil {
+	//now := time.Now()
+	//if err := os.Rename("generated", fmt.Sprintf("generated.%d", now.Unix())); err != nil {
+	//	if !os.IsNotExist(err) {
 	//		log.Fatal(err)
 	//	}
 	//}
 
-	for teamID := 1; teamID <= maxTeamID; teamID++ {
-		if !isAvailableTeamID(teamID) {
-			continue
-		}
-		if err := generateTeam(teamID); err != nil {
-			log.Fatal(err)
-		}
+	doSchedule()
+
+	for k, v := range scheduled {
+		fmt.Printf("team%03d: %s\n", k, v)
 	}
 
-	log.Println("generated")
+	//for teamID := 1; teamID <= maxTeamID; teamID++ {
+	//	if !isAvailableTeamID(teamID) {
+	//		continue
+	//	}
+	//
+	//	if err := generateTeam(teamID); err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}
+}
+
+func getBackend(hypervisor string) string {
+	s := strings.TrimPrefix(hypervisor, "isucn00")
+
+	id, err := strconv.Atoi(s)
+	if err != nil {
+		panic(err)
+	}
+
+	// id is 1 to 24
+	if id <= 12 {
+		return "dorado001"
+	} else {
+		return "dorado002"
+	}
+}
+
+func getImageIDs(backend string) (problemImageID, benchImageID, bastionID string) {
+	switch backend {
+	case "dorado001":
+		return "1ab68dff-7d0d-40b5-abff-3ef0db2618b1", "10eee589-725b-4686-a424-1df5e161b031", "5138fee8-59a1-407a-bb84-2937d9705143"
+	case "dorado002":
+		return "23e33fcd-1951-4185-ba47-0a6fb1dcf50e", "8dea495b-373e-49ca-9b79-caa63e842c7f", "c453a2ef-9865-4b14-bff2-0a78416ebea5"
+	default:
+		panic("shiran")
+	}
 }
 
 func generateTeam(teamID int) error {
@@ -130,22 +144,80 @@ func writeFile(id int, teamID, teamSubnet string) error {
 }
 
 func generateNetwork(id int, teamID, teamSubnet string) string {
-	return fmt.Sprintf(templateTeamNetwork, teamID, teamID, id, teamSubnet, teamSubnet, teamSubnet, teamSubnet, teamSubnet, teamID, teamID, id, teamID, teamID, teamID)
+	m := map[string]interface{}{
+		"TeamID":     teamID,
+		"TeamSubnet": teamSubnet,
+		"TeamIDNum":  strconv.Itoa(id),
+	}
+
+	return Tprintf(templateTeamNetwork, m)
 }
 
 func generateProblem(id int, teamID, teamSubnet string) string {
-	network := fmt.Sprintf(templateProblemNetwork, teamID, teamID, teamSubnet, teamID, teamID, teamID)
-	vm := fmt.Sprintf(templateProblemVM, teamID, teamID, scheduled[id], teamID, teamID, scheduled[id], teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID)
+	problemID, _, _ := getImageIDs(getBackend(scheduled[id]))
+
+	m := map[string]interface{}{
+		"TeamID":           teamID,
+		"TeamSubnet":       teamSubnet,
+		"TeamIDNum":        strconv.Itoa(id),
+		"HypervisorName":   scheduled[id],
+		"EuropaBackend":    getBackend(scheduled[id]),
+		"ProblemVMImageID": problemID,
+	}
+
+	network := Tprintf(templateProblemNetwork, m)
+	vm := Tprintf(templateProblemVM, m)
 
 	return strings.Join([]string{network, vm}, "")
 }
 
 func generateBench(id int, teamID, teamSubnet string) string {
-	return fmt.Sprintf(templateBench, teamID, teamID, teamSubnet, teamID, teamID, teamID, teamID, teamID, scheduled[id], teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID)
+	_, benchID, _ := getImageIDs(getBackend(scheduled[id]))
+
+	m := map[string]interface{}{
+		"TeamID":         teamID,
+		"TeamSubnet":     teamSubnet,
+		"HypervisorName": scheduled[id],
+		"EuropaBackend":  getBackend(scheduled[id]),
+		"BenchImageID":   benchID,
+	}
+
+	return Tprintf(templateBench, m)
+
 }
 
 func generateBastion(id int, teamID, teamSubnet string) string {
-	return fmt.Sprintf(templateBastion, teamID, teamID, teamSubnet, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID, teamID)
+	_, _, bastionID := getImageIDs(getBackend(scheduled[id]))
+
+	m := map[string]interface{}{
+		"TeamID":         teamID,
+		"TeamSubnet":     teamSubnet,
+		"BastionID":      "100",
+		"HypervisorName": "isuadm0002",
+		"EuropaBackend":  getBackend(scheduled[id]),
+		"BastionImageID": bastionID,
+	}
+
+	bastion100 := Tprintf(templateBastion, m)
+
+	m = map[string]interface{}{
+		"TeamID":         teamID,
+		"TeamSubnet":     teamSubnet,
+		"BastionID":      "200",
+		"HypervisorName": "isuadm0006",
+		"EuropaBackend":  getBackend(scheduled[id]),
+		"BastionImageID": bastionID,
+	}
+	bastion200 := Tprintf(templateBastion, m)
+
+	return strings.Join([]string{bastion100, bastion200}, "")
+}
+
+func Tprintf(format string, params map[string]interface{}) string {
+	for key, val := range params {
+		format = strings.Replace(format, "%{"+key+"}s", fmt.Sprintf("%s", val), -1)
+	}
+	return format
 }
 
 const (
@@ -183,26 +255,26 @@ func doSchedule() {
 
 // templateTeamNetwork is template of resource that one of team
 // %s catch teamID (%03d)
-const templateTeamNetwork = `resource "lovi_subnet" "team%s" {
-  name = "team%s"
-  vlan_id = 1000 + %d
-  network = "%s.0/24"
-  start = "%s.100"
-  end = "%s.200"
-  gateway = "%s.254"
+const templateTeamNetwork = `resource "lovi_subnet" "team%{TeamID}s" {
+  name = "team%{TeamID}s"
+  vlan_id = 1000 + %{TeamIDNum}s
+  network = "%{TeamSubnet}s.0/24"
+  start = "%{TeamSubnet}s.100"
+  end = "%{TeamSubnet}s.200"
+  gateway = "%{TeamSubnet}s.254"
   dns_server = "8.8.8.8"
-  metadata_server = "%s.1"
+  metadata_server = "%{TeamSubnet}s.1"
 }
 
-resource "lovi_bridge" "team%s" {
-  name = "team%s"
-  vlan_id = 1000 + %d
+resource "lovi_bridge" "team%{TeamID}s" {
+  name = "team%{TeamID}s"
+  vlan_id = 1000 + %{TeamIDNum}s
 
-  depends_on = [lovi_subnet.team%s]
+  depends_on = [lovi_subnet.team%{TeamID}s]
 }
 
-resource "lovi_internal_bridge" "team%s" {
-  name = "team%s-in"
+resource "lovi_internal_bridge" "team%{TeamID}s" {
+  name = "team%{TeamID}s-in"
 }`
 
 // templateProblemNetwork is template of network resource for problem
@@ -212,93 +284,95 @@ variable "node_count" {
   default = 3
 }
 
-resource "lovi_address" "problem-team%s" {
+resource "lovi_address" "problem-team%{TeamID}s" {
   count = var.node_count
 
-  subnet_id = lovi_subnet.team%s.id
-  fixed_ip = "%s.${101 + count.index}"
+  subnet_id = lovi_subnet.team%{TeamID}s.id
+  fixed_ip = "%{TeamSubnet}s.${101 + count.index}"
 }
 
-resource "lovi_lease" "problem-team%s" {
+resource "lovi_lease" "problem-team%{TeamID}s" {
   count = var.node_count
 
-  address_id = lovi_address.problem-team%s[count.index].id
+  address_id = lovi_address.problem-team%{TeamID}s[count.index].id
 
-  depends_on = [lovi_address.problem-team%s]
+  depends_on = [lovi_address.problem-team%{TeamID}s]
 }`
 
 // templateProblemVM is template of virtual machine resource for problem
 // %s catch teamID (%03d)
 const templateProblemVM = `
-resource "lovi_cpu_pinning_group" "team%s" {
-  name = "team%s"
+resource "lovi_cpu_pinning_group" "team%{TeamID}s" {
+  name = "team%{TeamID}s"
   count_of_core = 4
-  hypervisor_name = "%s"
+  hypervisor_name = "%{HypervisorName}s"
 }
 
-resource "lovi_virtual_machine" "problem-team%s" {
+resource "lovi_virtual_machine" "problem-team%{TeamID}s" {
   count = var.node_count
 
-  name = "team%s-${format("%%03d", count.index + 1)}"
+  name = "team%{TeamID}s-${format("%03d", count.index + 1)}"
   vcpus = 1
   memory_kib = 2 * 1024 * 1024
   root_volume_gb = 10
-  source_image_id = "be1069ee-b147-49fd-b7dd-65639f79012d"
-  hypervisor_name = "%s"
+  source_image_id = "%{ProblemVMImageID}s"
+  hypervisor_name = "%{HypervisorName}s"
+  europa_backend_name = "%{EuropaBackend}s"
 
   read_bytes_sec = 100 * 1000 * 1000
   write_bytes_sec = 100 * 1000 * 1000
   read_iops_sec = 200
   write_iops_sec = 200
 
-  cpu_pinning_group_name = lovi_cpu_pinning_group.team%s.name
+  cpu_pinning_group_name = lovi_cpu_pinning_group.team%{TeamID}s.name
 
   depends_on = [
-    lovi_cpu_pinning_group.team%s
+    lovi_cpu_pinning_group.team%{TeamID}s
   ]
 }
 
-resource "lovi_interface_attachment" "problem-team%s" {
+resource "lovi_interface_attachment" "problem-team%{TeamID}s" {
   count = var.node_count
 
-  virtual_machine_id = lovi_virtual_machine.problem-team%s[count.index].id
-  bridge_id = lovi_bridge.team%s.id
+  virtual_machine_id = lovi_virtual_machine.problem-team%{TeamID}s[count.index].id
+  bridge_id = lovi_bridge.team%{TeamID}s.id
   //average = 12500 // NOTE: 100Mbps
   //average = 37500 // NOTE: 300Mbps
   average = 125000 // NOTE: 1Gbps
-  name = "t%s-${format("%%03d", count.index + 1)}"
-  lease_id = lovi_lease.problem-team%s[count.index].id
+  name = "t%{TeamID}s-${format("%03d", count.index + 1)}"
+  lease_id = lovi_lease.problem-team%{TeamID}s[count.index].id
 
   depends_on = [
-    lovi_virtual_machine.problem-team%s,
-    lovi_lease.problem-team%s
+    lovi_virtual_machine.problem-team%{TeamID}s,
+    lovi_lease.problem-team%{TeamID}s
   ]
 }`
 
 // templateBench is template of resource for benchmarker
 const templateBench = `
-resource "lovi_address" "bench-team%s" {
-  subnet_id = lovi_subnet.team%s.id
-  fixed_ip = "%s.104"
+resource "lovi_address" "bench-team%{TeamID}s" {
+  subnet_id = lovi_subnet.team%{TeamID}s.id
+  fixed_ip = "%{TeamSubnet}s.104"
 }
 
-resource "lovi_lease" "bench-team%s" {
-  address_id = lovi_address.bench-team%s.id
+resource "lovi_lease" "bench-team%{TeamID}s" {
+  address_id = lovi_address.bench-team%{TeamID}s.id
 
-  depends_on = [lovi_address.bench-team%s]
+  depends_on = [lovi_address.bench-team%{TeamID}s]
 }
 
-resource "lovi_virtual_machine" "bench-team%s" {
-  name = "team%s-bench"
+resource "lovi_virtual_machine" "bench-team%{TeamID}s" {
+  name = "team%{TeamID}s-bench"
   vcpus = 1
   memory_kib = 16 * 1024 * 1024
   root_volume_gb = 10
-  source_image_id = "be1069ee-b147-49fd-b7dd-65639f79012d"
-  hypervisor_name = "%s"
+  source_image_id = "%{BenchImageID}s"
+  hypervisor_name = "%{HypervisorName}s"
+  europa_backend_name = "%{EuropaBackend}s"
 
   depends_on = [
-    lovi_virtual_machine.problem-team%s,
-    lovi_cpu_pinning_group.team%s
+    lovi_virtual_machine.problem-team%{TeamID}s,
+    lovi_cpu_pinning_group.team%{TeamID}s
   ]
 
   read_bytes_sec = 100 * 1000 * 1000
@@ -306,57 +380,58 @@ resource "lovi_virtual_machine" "bench-team%s" {
   read_iops_sec = 200
   write_iops_sec = 200
 
-  cpu_pinning_group_name = lovi_cpu_pinning_group.team%s.name
+  cpu_pinning_group_name = lovi_cpu_pinning_group.team%{TeamID}s.name
 }
 
-resource "lovi_interface_attachment" "bench-team%s" {
-  virtual_machine_id = lovi_virtual_machine.bench-team%s.id
-  bridge_id = lovi_bridge.team%s.id
+resource "lovi_interface_attachment" "bench-team%{TeamID}s" {
+  virtual_machine_id = lovi_virtual_machine.bench-team%{TeamID}s.id
+  bridge_id = lovi_bridge.team%{TeamID}s.id
   average = 12500 // NOTE: 100Mbps
-  name = "t%s-be"
-  lease_id = lovi_lease.bench-team%s.id
+  name = "t%{TeamID}s-be"
+  lease_id = lovi_lease.bench-team%{TeamID}s.id
 
   depends_on = [
-    lovi_virtual_machine.bench-team%s,
-    lovi_lease.bench-team%s
+    lovi_virtual_machine.bench-team%{TeamID}s,
+    lovi_lease.bench-team%{TeamID}s
   ]
 }`
 
 // templateBastion is template of resource for bastion
 const templateBastion = `
-resource "lovi_address" "bastion-team%s" {
-  subnet_id = lovi_subnet.team%s.id
-  fixed_ip = "%s.100"
+resource "lovi_address" "bastion%{BastionID}s-team%{TeamID}s" {
+  subnet_id = lovi_subnet.team%{TeamID}s.id
+  fixed_ip = "%{TeamSubnet}s.%{BastionID}s"
 }
 
-resource "lovi_lease" "bastion-team%s" {
-  address_id = lovi_address.bastion-team%s.id
+resource "lovi_lease" "bastion%{BastionID}s-team%{TeamID}s" {
+  address_id = lovi_address.bastion%{BastionID}s-team%{TeamID}s.id
 
-  depends_on = [lovi_address.bastion-team%s]
+  depends_on = [lovi_address.bastion%{BastionID}s-team%{TeamID}s]
 }
 
-resource "lovi_virtual_machine" "bastion-team%s" {
-  name = "team%s-bastion"
+resource "lovi_virtual_machine" "bastion%{BastionID}s-team%{TeamID}s" {
+  name = "team%{TeamID}s-bastion%{BastionID}s"
   vcpus = 1
   memory_kib = 2 * 1024 * 1024
   root_volume_gb = 10
-  source_image_id = "bab847e2-b14f-4463-80ee-8cfb36392ea9"
-  hypervisor_name = "isuadm0002"
+  source_image_id = "%{BastionImageID}s"
+  hypervisor_name = "%{HypervisorName}s"
+  europa_backend_name = "%{EuropaBackend}s"
 
   depends_on = [
-    lovi_virtual_machine.problem-team%s,
+    lovi_virtual_machine.problem-team%{TeamID}s,
   ]
 }
 
-resource "lovi_interface_attachment" "bastion-team%s" {
-  virtual_machine_id = lovi_virtual_machine.bastion-team%s.id
-  bridge_id = lovi_bridge.team%s.id
+resource "lovi_interface_attachment" "bastion%{BastionID}s-team%{TeamID}s" {
+  virtual_machine_id = lovi_virtual_machine.bastion%{BastionID}s-team%{TeamID}s.id
+  bridge_id = lovi_bridge.team%{TeamID}s.id
   average = 125000 // NOTE: 1Gbps
-  name = "t%s-ba"
-  lease_id = lovi_lease.bastion-team%s.id
+  name = "t%{TeamID}s-ba%{BastionID}s"
+  lease_id = lovi_lease.bastion%{BastionID}s-team%{TeamID}s.id
 
   depends_on = [
-    lovi_virtual_machine.bastion-team%s,
-    lovi_lease.bastion-team%s
+    lovi_virtual_machine.bastion%{BastionID}s-team%{TeamID}s,
+    lovi_lease.bastion%{BastionID}s-team%{TeamID}s
   ]
 }`

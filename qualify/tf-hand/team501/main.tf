@@ -51,7 +51,7 @@ resource "lovi_virtual_machine" "problem-team501" {
   vcpus = 1
   memory_kib = 2 * 1024 * 1024
   root_volume_gb = 10
-  source_image_id = "9a5da2f5-708c-4912-abc8-4251551bdfb1"
+  source_image_id = "bab847e2-b14f-4463-80ee-8cfb36392ea9"
   hypervisor_name = "isuadm0008"
 
   read_bytes_sec = 100 * 1000 * 1000
@@ -60,6 +60,7 @@ resource "lovi_virtual_machine" "problem-team501" {
   write_iops_sec = 200
 
   cpu_pinning_group_name = lovi_cpu_pinning_group.team501.name
+  europa_backend_name = "dorado001"
 
   depends_on = [
     lovi_cpu_pinning_group.team501
@@ -99,8 +100,10 @@ resource "lovi_virtual_machine" "bench-team501" {
   vcpus = 1
   memory_kib = 16 * 1024 * 1024
   root_volume_gb = 10
-  source_image_id = "13e7bc58-f410-4ea4-9c42-6e5021e521c0"
+  source_image_id = "bab847e2-b14f-4463-80ee-8cfb36392ea9"
   hypervisor_name = "isuadm0008"
+
+  europa_backend_name = "dorado001"
 
   depends_on = [
     lovi_virtual_machine.problem-team501,
@@ -145,7 +148,9 @@ resource "lovi_virtual_machine" "bastion-team501" {
   memory_kib = 2 * 1024 * 1024
   root_volume_gb = 10
   source_image_id = "bab847e2-b14f-4463-80ee-8cfb36392ea9"
-  hypervisor_name = "isuadm0002"
+  hypervisor_name = "isuadm0008"
+
+  europa_backend_name = "dorado001"
 
   depends_on = [
     lovi_virtual_machine.problem-team501,

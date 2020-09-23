@@ -20,15 +20,77 @@ resource "lovi_internal_bridge" "team550" {
   name = "team550-in"
 }
 
+
+
+resource "lovi_address" "tsuyoino-team550" {
+  subnet_id = lovi_subnet.team550.id
+  fixed_ip = "10.165.50.101"
+}
+
+resource "lovi_lease" "tsuyoino-team550" {
+  address_id = lovi_address.tsuyoino-team550.id
+
+  depends_on = [lovi_address.tsuyoino-team550]
+}
+resource "lovi_cpu_pinning_group" "tsuyoino-team550" {
+  name = "team550-tsuyoino"
+  count_of_core = 32
+  hypervisor_name = "isuadm0004"
+}
+
+resource "lovi_virtual_machine" "tsuyoino-team550" {
+  name = "team550-tsuyoino"
+  vcpus = 32
+  memory_kib = 32 * 1024 * 1024
+  root_volume_gb = 30
+  source_image_id = "482bc437-71bd-4501-8488-dd93a8b82f54"
+  hypervisor_name = "isuadm0004"
+
+  //  read_bytes_sec = 100 * 1000 * 1000
+  //  write_bytes_sec = 100 * 1000 * 1000
+  //  read_iops_sec = 200
+  //  write_iops_sec = 200
+
+  cpu_pinning_group_name = lovi_cpu_pinning_group.tsuyoino-team550.name
+  europa_backend_name = "dorado001"
+
+  depends_on = [
+    lovi_cpu_pinning_group.tsuyoino-team550
+  ]
+}
+
+resource "lovi_interface_attachment" "tsuyoino-team550" {
+  virtual_machine_id = lovi_virtual_machine.tsuyoino-team550.id
+  bridge_id = lovi_bridge.team550.id
+  //average = 12500 // NOTE: 100Mbps
+  //average = 37500 // NOTE: 300Mbps
+  average = 125000
+  // NOTE: 1Gbps
+  name = "t550-t"
+  lease_id = lovi_lease.tsuyoino-team550.id
+
+  depends_on = [
+    lovi_virtual_machine.tsuyoino-team550,
+    lovi_lease.tsuyoino-team550
+  ]
+}
+
+
+
+
+// problem //
+
+
+
 variable "node_count" {
-  default = 6
+  default = 5
 }
 
 resource "lovi_address" "problem-team550" {
   count = var.node_count
 
   subnet_id = lovi_subnet.team550.id
-  fixed_ip = "10.165.50.${101 + count.index}"
+  fixed_ip = "10.165.50.${101 + count.index + 1}"
 }
 
 resource "lovi_lease" "problem-team550" {
@@ -86,6 +148,14 @@ resource "lovi_interface_attachment" "problem-team550" {
     lovi_lease.problem-team550
   ]
 }
+
+
+
+
+// bastion //
+
+
+
 
 resource "lovi_address" "bastion200-team550" {
   subnet_id = lovi_subnet.team550.id

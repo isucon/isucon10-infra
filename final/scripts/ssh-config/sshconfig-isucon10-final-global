@@ -1,0 +1,645 @@
+
+Host team1-bastion200
+  User isucon-admin
+  HostName 157.112.64.1
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.160.1.*
+  User isucon-admin
+  ProxyJump team1-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team10-bastion200
+  User isucon-admin
+  HostName 157.112.64.10
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.160.10.*
+  User isucon-admin
+  ProxyJump team10-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team15-bastion200
+  User isucon-admin
+  HostName 157.112.64.15
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.160.15.*
+  User isucon-admin
+  ProxyJump team15-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team20-bastion200
+  User isucon-admin
+  HostName 157.112.64.20
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.160.20.*
+  User isucon-admin
+  ProxyJump team20-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team24-bastion200
+  User isucon-admin
+  HostName 157.112.64.24
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.160.24.*
+  User isucon-admin
+  ProxyJump team24-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team27-bastion200
+  User isucon-admin
+  HostName 157.112.64.27
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.160.27.*
+  User isucon-admin
+  ProxyJump team27-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team86-bastion200
+  User isucon-admin
+  HostName 157.112.64.86
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.160.86.*
+  User isucon-admin
+  ProxyJump team86-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team147-bastion200
+  User isucon-admin
+  HostName 157.112.64.147
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.161.47.*
+  User isucon-admin
+  ProxyJump team147-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team159-bastion200
+  User isucon-admin
+  HostName 157.112.64.159
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.161.59.*
+  User isucon-admin
+  ProxyJump team159-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team177-bastion200
+  User isucon-admin
+  HostName 157.112.64.177
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.161.77.*
+  User isucon-admin
+  ProxyJump team177-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team194-bastion200
+  User isucon-admin
+  HostName 157.112.64.194
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.161.94.*
+  User isucon-admin
+  ProxyJump team194-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team210-bastion200
+  User isucon-admin
+  HostName 157.112.64.210
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.162.10.*
+  User isucon-admin
+  ProxyJump team210-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team213-bastion200
+  User isucon-admin
+  HostName 157.112.64.213
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.162.13.*
+  User isucon-admin
+  ProxyJump team213-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team223-bastion200
+  User isucon-admin
+  HostName 157.112.64.223
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.162.23.*
+  User isucon-admin
+  ProxyJump team223-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team228-bastion200
+  User isucon-admin
+  HostName 157.112.64.228
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.162.28.*
+  User isucon-admin
+  ProxyJump team228-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team229-bastion200
+  User isucon-admin
+  HostName 157.112.64.229
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.162.29.*
+  User isucon-admin
+  ProxyJump team229-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team247-bastion200
+  User isucon-admin
+  HostName 157.112.64.247
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.162.47.*
+  User isucon-admin
+  ProxyJump team247-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team276-bastion200
+  User isucon-admin
+  HostName 157.112.65.22
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.162.76.*
+  User isucon-admin
+  ProxyJump team276-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team286-bastion200
+  User isucon-admin
+  HostName 157.112.65.32
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.162.86.*
+  User isucon-admin
+  ProxyJump team286-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team304-bastion200
+  User isucon-admin
+  HostName 157.112.65.50
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.163.4.*
+  User isucon-admin
+  ProxyJump team304-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team331-bastion200
+  User isucon-admin
+  HostName 157.112.65.77
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.163.31.*
+  User isucon-admin
+  ProxyJump team331-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team347-bastion200
+  User isucon-admin
+  HostName 157.112.65.93
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.163.47.*
+  User isucon-admin
+  ProxyJump team347-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team353-bastion200
+  User isucon-admin
+  HostName 157.112.65.99
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.163.53.*
+  User isucon-admin
+  ProxyJump team353-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team357-bastion200
+  User isucon-admin
+  HostName 157.112.65.103
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.163.57.*
+  User isucon-admin
+  ProxyJump team357-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team375-bastion200
+  User isucon-admin
+  HostName 157.112.65.121
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.163.75.*
+  User isucon-admin
+  ProxyJump team375-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team389-bastion200
+  User isucon-admin
+  HostName 157.112.65.135
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.163.89.*
+  User isucon-admin
+  ProxyJump team389-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team394-bastion200
+  User isucon-admin
+  HostName 157.112.65.140
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.163.94.*
+  User isucon-admin
+  ProxyJump team394-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team406-bastion200
+  User isucon-admin
+  HostName 157.112.65.152
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.6.*
+  User isucon-admin
+  ProxyJump team406-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team415-bastion200
+  User isucon-admin
+  HostName 157.112.65.161
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.15.*
+  User isucon-admin
+  ProxyJump team415-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team428-bastion200
+  User isucon-admin
+  HostName 157.112.65.174
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.28.*
+  User isucon-admin
+  ProxyJump team428-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team440-bastion200
+  User isucon-admin
+  HostName 157.112.65.186
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.40.*
+  User isucon-admin
+  ProxyJump team440-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team472-bastion200
+  User isucon-admin
+  HostName 157.112.65.218
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.72.*
+  User isucon-admin
+  ProxyJump team472-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team473-bastion200
+  User isucon-admin
+  HostName 157.112.65.219
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.73.*
+  User isucon-admin
+  ProxyJump team473-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team474-bastion200
+  User isucon-admin
+  HostName 157.112.65.220
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.74.*
+  User isucon-admin
+  ProxyJump team474-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team483-bastion200
+  User isucon-admin
+  HostName 157.112.65.229
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.83.*
+  User isucon-admin
+  ProxyJump team483-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team498-bastion200
+  User isucon-admin
+  HostName 157.112.65.244
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.98.*
+  User isucon-admin
+  ProxyJump team498-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team515-bastion200
+  User isucon-admin
+  HostName 157.112.66.7
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.165.15.*
+  User isucon-admin
+  ProxyJump team515-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team534-bastion200
+  User isucon-admin
+  HostName 157.112.66.26
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.165.34.*
+  User isucon-admin
+  ProxyJump team534-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team535-bastion200
+  User isucon-admin
+  HostName 157.112.66.27
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.165.35.*
+  User isucon-admin
+  ProxyJump team535-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team536-bastion200
+  User isucon-admin
+  HostName 157.112.66.28
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.165.36.*
+  User isucon-admin
+  ProxyJump team536-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team537-bastion200
+  User isucon-admin
+  HostName 157.112.66.29
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.165.37.*
+  User isucon-admin
+  ProxyJump team537-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team538-bastion200
+  User isucon-admin
+  HostName 157.112.66.30
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.165.38.*
+  User isucon-admin
+  ProxyJump team538-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host team576-bastion200
+  User isucon-admin
+  HostName 157.112.66.68
+  Port 20340
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.165.76.*
+  User isucon-admin
+  ProxyJump team576-bastion200
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+

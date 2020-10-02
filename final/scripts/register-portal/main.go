@@ -20,7 +20,7 @@ import (
 )
 
 const (
-	portalAPIEndpoint = "portal-grpc-dev.x.isucon.dev:443"
+	portalAPIEndpoint = "portal-grpc-prd.x.isucon.dev:443"
 )
 
 func main() {
@@ -35,7 +35,6 @@ func run() error {
 	if satelitAddress == "" {
 		return errors.New("need to set satelit address")
 	}
-	fmt.Printf("satelit adddress: %s\n", satelitAddress)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -52,7 +51,6 @@ func run() error {
 		return err
 	}
 	portalClient := portalpb.NewInstanceManagementClient(connPortal)
-	fmt.Println(portalClient)
 
 	resp, err := satelitClient.ListVirtualMachine(ctx, &satelitpb.ListVirtualMachineRequest{})
 	if err != nil {
@@ -66,12 +64,12 @@ func run() error {
 		}
 
 		req := &portalpb.InformInstanceStateUpdateRequest{
-			Token:    "himitsudayo",
+			Token:    "55e3dee02cd08c7b5a03c981725ca2490f8d4f5478e29b37f3a759c0fc4c6e96",
 			Instance: ci,
 		}
-		//if _, err := portalClient.InformInstanceStateUpdate(ctx, req); err != nil {
-		//	return err
-		//}
+		if _, err := portalClient.InformInstanceStateUpdate(ctx, req); err != nil {
+			return err
+		}
 
 		fmt.Println(req)
 	}
@@ -111,7 +109,7 @@ func parseVMName(vmName, vmUUID string) (*resources.ContestantInstance, error) {
 	ip := fmt.Sprintf("10.%d.%d.%d", base+top, under, number+100)
 
 	ci := &resources.ContestantInstance{
-		CloudId:            vmUUID,
+		CloudId:            vmName,
 		TeamId:             int64(teamID),
 		Number:             int64(number),
 		PublicIpv4Address:  fmt.Sprintf("isu%d.t.isucon.dev", number),

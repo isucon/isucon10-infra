@@ -30,9 +30,8 @@ Host team%d-bastion200
 `
 
 const templateCNConfig = `
-Host isucn000%d
+Host isucn00%s.hv.x.isucon.dev
   User whywaita
-  HostName 10.200.80.%d
   IdentityFile %s
   StrictHostKeyChecking no
 
@@ -57,7 +56,7 @@ func main() {
 
 func generateFromCN() {
 	for i := 1; i <= 24; i++ {
-		fmt.Printf(templateCNConfig, i, 64+i, privateKeyPath)
+		fmt.Printf(templateCNConfig, fmt.Sprintf("%02d", i), privateKeyPath)
 	}
 
 	ids := team.GetTeamIDs()
@@ -70,7 +69,7 @@ func generateFromCN() {
 		words := strings.Split(ipNet.String(), ".")
 		teamSubnet := strings.Join(words[:3], ".")
 
-		fmt.Printf(templateSSHConfig, teamSubnet, scheduled[id], privateKeyPath)
+		fmt.Printf(templateSSHConfig, teamSubnet, scheduled[id]+".hv.x.isucon.dev", privateKeyPath)
 	}
 }
 
@@ -133,6 +132,11 @@ func doSchedule() {
 
 		if perHost == 0 {
 			// 新しいCNへ
+			NumberCN++
+			perHost = CountTeamPerHost
+		}
+		if teamID == 515 {
+			// ガチチーム終了、並行チームは別のCNに行きましょうね
 			NumberCN++
 			perHost = CountTeamPerHost
 		}

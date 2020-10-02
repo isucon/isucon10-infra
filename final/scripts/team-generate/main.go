@@ -60,9 +60,9 @@ func getBackend(hypervisor string) string {
 func getImageIDs(backend string) (problemImageID, benchImageID, bastionID string) {
 	switch backend {
 	case "dorado001":
-		return "18021d55-a78b-490e-b8b3-801fdf753136", "783ab7dd-7cae-46c7-9121-53440466fc36", "5138fee8-59a1-407a-bb84-2937d9705143"
+		return "ee12d10d-471e-4939-8650-9302c2ea71c0", "a87104a2-0c24-4058-bc6f-13a9e632b5c1", "5138fee8-59a1-407a-bb84-2937d9705143"
 	case "dorado002":
-		return "ea2b312a-cbfe-431b-bd6e-f7747a5d3e54", "d8bffc3a-5a76-46e1-a922-bf98a2027833", "c453a2ef-9865-4b14-bff2-0a78416ebea5"
+		return "18295a50-6ec0-4a6f-8dc7-f19d28d2057e", "7b4d093f-7e9a-4488-9d77-93c8e3556a64", "c453a2ef-9865-4b14-bff2-0a78416ebea5"
 	default:
 		panic("shiran")
 	}
@@ -268,6 +268,11 @@ func doSchedule() {
 			NumberCN++
 			perHost = CountTeamPerHost
 		}
+		if teamID == 515 {
+			// ガチチーム終了、並行チームは別のCNに行きましょうね
+			NumberCN++
+			perHost = CountTeamPerHost
+		}
 	}
 }
 
@@ -369,7 +374,7 @@ resource "lovi_virtual_machine" "bench-team%{TeamID}s" {
   name = "team%{TeamID}s-bench"
   vcpus = 8
   memory_kib = 16 * 1024 * 1024
-  root_volume_gb = 10
+  root_volume_gb = 30
   source_image_id = "%{BenchImageID}s"
   hypervisor_name = "%{HypervisorName}s"
   europa_backend_name = "%{EuropaBackend}s"

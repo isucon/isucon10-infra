@@ -1,0 +1,445 @@
+
+Host isucn0001.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0002.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0003.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0004.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0005.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0006.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0007.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0008.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0009.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0010.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0011.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0012.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0013.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0014.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0015.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0016.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0017.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0018.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0019.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0020.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0021.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0022.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0023.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host isucn0024.hv.x.isucon.dev
+  User whywaita
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.160.1.*
+  User isucon-admin
+  ProxyJump isucn0001.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.160.10.*
+  User isucon-admin
+  ProxyJump isucn0001.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.160.15.*
+  User isucon-admin
+  ProxyJump isucn0002.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.160.20.*
+  User isucon-admin
+  ProxyJump isucn0002.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.160.24.*
+  User isucon-admin
+  ProxyJump isucn0003.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.160.27.*
+  User isucon-admin
+  ProxyJump isucn0003.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.160.86.*
+  User isucon-admin
+  ProxyJump isucn0004.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.161.47.*
+  User isucon-admin
+  ProxyJump isucn0004.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.161.59.*
+  User isucon-admin
+  ProxyJump isucn0005.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.161.77.*
+  User isucon-admin
+  ProxyJump isucn0005.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.161.94.*
+  User isucon-admin
+  ProxyJump isucn0006.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.162.10.*
+  User isucon-admin
+  ProxyJump isucn0006.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.162.13.*
+  User isucon-admin
+  ProxyJump isucn0007.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.162.23.*
+  User isucon-admin
+  ProxyJump isucn0007.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.162.28.*
+  User isucon-admin
+  ProxyJump isucn0008.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.162.29.*
+  User isucon-admin
+  ProxyJump isucn0008.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.162.47.*
+  User isucon-admin
+  ProxyJump isucn0009.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.162.76.*
+  User isucon-admin
+  ProxyJump isucn0009.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.162.86.*
+  User isucon-admin
+  ProxyJump isucn0010.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.163.4.*
+  User isucon-admin
+  ProxyJump isucn0010.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.163.31.*
+  User isucon-admin
+  ProxyJump isucn0011.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.163.47.*
+  User isucon-admin
+  ProxyJump isucn0011.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.163.53.*
+  User isucon-admin
+  ProxyJump isucn0012.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.163.73.*
+  User isucon-admin
+  ProxyJump isucn0012.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.163.75.*
+  User isucon-admin
+  ProxyJump isucn0013.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.163.89.*
+  User isucon-admin
+  ProxyJump isucn0013.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.163.94.*
+  User isucon-admin
+  ProxyJump isucn0014.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.6.*
+  User isucon-admin
+  ProxyJump isucn0014.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.15.*
+  User isucon-admin
+  ProxyJump isucn0015.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.28.*
+  User isucon-admin
+  ProxyJump isucn0015.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.40.*
+  User isucon-admin
+  ProxyJump isucn0016.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.72.*
+  User isucon-admin
+  ProxyJump isucn0016.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.73.*
+  User isucon-admin
+  ProxyJump isucn0017.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.74.*
+  User isucon-admin
+  ProxyJump isucn0017.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.83.*
+  User isucon-admin
+  ProxyJump isucn0018.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.164.98.*
+  User isucon-admin
+  ProxyJump isucn0018.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.165.15.*
+  User isucon-admin
+  ProxyJump isucn0019.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.165.34.*
+  User isucon-admin
+  ProxyJump isucn0020.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.165.35.*
+  User isucon-admin
+  ProxyJump isucn0020.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.165.36.*
+  User isucon-admin
+  ProxyJump isucn0021.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.165.37.*
+  User isucon-admin
+  ProxyJump isucn0021.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.165.38.*
+  User isucon-admin
+  ProxyJump isucn0022.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+
+
+Host 10.165.76.*
+  User isucon-admin
+  ProxyJump isucn0022.hv.x.isucon.dev
+  IdentityFile ~/.ssh/id_rsa
+  StrictHostKeyChecking no
+

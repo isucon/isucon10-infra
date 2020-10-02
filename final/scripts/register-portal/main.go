@@ -5,14 +5,18 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"os"
 	"strconv"
 	"strings"
+
+	"github.com/whywaita/satelit-isucon/team"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
 	"github.com/isucon/isucon10-portal/proto.go/isuxportal/resources"
 	portalpb "github.com/isucon/isucon10-portal/proto.go/isuxportal/services/dcim"
+	satelitpb "github.com/whywaita/satelit/api/satelit"
 )
 
 const (
@@ -26,162 +30,50 @@ func main() {
 }
 
 func run() error {
-	//args := os.Args
-	//satelitAddress := args[1]
-	//if satelitAddress == "" {
-	//	return errors.New("need to set satelit address")
-	//}
-	//fmt.Printf("satelit adddress: %s\n", satelitAddress)
-	//
+	args := os.Args
+	satelitAddress := args[1]
+	if satelitAddress == "" {
+		return errors.New("need to set satelit address")
+	}
+	fmt.Printf("satelit adddress: %s\n", satelitAddress)
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	//connSatelit, err := grpc.DialContext(ctx, satelitAddress, grpc.WithBlock(), grpc.WithInsecure())
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//satelitClient := satelitpb.NewSatelitClient(connSatelit)
+	connSatelit, err := grpc.DialContext(ctx, satelitAddress+":9262", grpc.WithBlock(), grpc.WithInsecure())
+	if err != nil {
+		return err
+	}
+
+	satelitClient := satelitpb.NewSatelitClient(connSatelit)
 
 	connPortal, err := grpc.DialContext(ctx, portalAPIEndpoint, grpc.WithBlock(), grpc.WithTransportCredentials(credentials.NewClientTLSFromCert(nil, "")))
 	if err != nil {
 		return err
 	}
 	portalClient := portalpb.NewInstanceManagementClient(connPortal)
+	fmt.Println(portalClient)
 
-	//resp, err := satelitClient.ListVirtualMachine(ctx, &satelitpb.ListVirtualMachineRequest{})
-	//if err != nil {
-	//	return err
-	//}
-
-	//for _, vm := range resp.VirtualMachines {
-	//	ci, err := parseVMName(vm.Name, vm.Uuid)
-	//	if err != nil {
-	//		continue
-	//	}
-	//
-	//	req := &portalpb.InformInstanceStateUpdateRequest{
-	//		Token:    "himitsudayo",
-	//		Instance: ci,
-	//	}
-	//	//if _, err := portalClient.InformInstanceStateUpdate(ctx, req); err != nil {
-	//	//	return err
-	//	//}
-	//
-	//	fmt.Println(req)
-	//}
-
-	//ci5291 := &resources.ContestantInstance{
-	//	CloudId:            uuid.NewV4().String(),
-	//	TeamId:             1,
-	//	Number:             1,
-	//	PublicIpv4Address:  "isu1.t.isucon.dev",
-	//	PrivateIpv4Address: "10.165.29.101",
-	//	Status:             resources.ContestantInstance_RUNNING,
-	//}
-	//ci5292 := &resources.ContestantInstance{
-	//	CloudId:            uuid.NewV4().String(),
-	//	TeamId:             1,
-	//	Number:             2,
-	//	PublicIpv4Address:  "isu2.t.isucon.dev",
-	//	PrivateIpv4Address: "10.165.29.102",
-	//	Status:             resources.ContestantInstance_RUNNING,
-	//}
-	//ci5293 := &resources.ContestantInstance{
-	//	CloudId:            uuid.NewV4().String(),
-	//	TeamId:             1,
-	//	Number:             3,
-	//	PublicIpv4Address:  "isu3.t.isucon.dev",
-	//	PrivateIpv4Address: "10.165.29.103",
-	//	Status:             resources.ContestantInstance_RUNNING,
-	//}
-
-	ci5301 := &resources.ContestantInstance{
-		CloudId:            "team530-001",
-		TeamId:             10,
-		Number:             1,
-		PublicIpv4Address:  "isu1.t.isucon.dev",
-		PrivateIpv4Address: "10.165.30.101",
-		Status:             resources.ContestantInstance_RUNNING,
-	}
-	ci5302 := &resources.ContestantInstance{
-		CloudId:            "team530-002",
-		TeamId:             10,
-		Number:             2,
-		PublicIpv4Address:  "isu2.t.isucon.dev",
-		PrivateIpv4Address: "10.165.30.102",
-		Status:             resources.ContestantInstance_RUNNING,
-	}
-	ci5303 := &resources.ContestantInstance{
-		CloudId:            "team530-003",
-		TeamId:             10,
-		Number:             3,
-		PublicIpv4Address:  "isu3.t.isucon.dev",
-		PrivateIpv4Address: "10.165.30.103",
-		Status:             resources.ContestantInstance_RUNNING,
+	resp, err := satelitClient.ListVirtualMachine(ctx, &satelitpb.ListVirtualMachineRequest{})
+	if err != nil {
+		return err
 	}
 
-	ci5311 := &resources.ContestantInstance{
-		CloudId:            "team531-001",
-		TeamId:             8,
-		Number:             1,
-		PublicIpv4Address:  "isu1.t.isucon.dev",
-		PrivateIpv4Address: "10.165.31.101",
-		Status:             resources.ContestantInstance_RUNNING,
-	}
-	ci5312 := &resources.ContestantInstance{
-		CloudId:            "team531-002",
-		TeamId:             8,
-		Number:             2,
-		PublicIpv4Address:  "isu2.t.isucon.dev",
-		PrivateIpv4Address: "10.165.31.102",
-		Status:             resources.ContestantInstance_RUNNING,
-	}
-	ci5313 := &resources.ContestantInstance{
-		CloudId:            "team531-003",
-		TeamId:             8,
-		Number:             3,
-		PublicIpv4Address:  "isu3.t.isucon.dev",
-		PrivateIpv4Address: "10.165.31.103",
-		Status:             resources.ContestantInstance_RUNNING,
-	}
+	for _, vm := range resp.VirtualMachines {
+		ci, err := parseVMName(vm.Name, vm.Uuid)
+		if err != nil {
+			continue
+		}
 
-	ci5321 := &resources.ContestantInstance{
-		CloudId:            "team532-001",
-		TeamId:             9,
-		Number:             1,
-		PublicIpv4Address:  "isu1.t.isucon.dev",
-		PrivateIpv4Address: "10.165.32.101",
-		Status:             resources.ContestantInstance_RUNNING,
-	}
-	ci5322 := &resources.ContestantInstance{
-		CloudId:            "team532-002",
-		TeamId:             9,
-		Number:             2,
-		PublicIpv4Address:  "isu2.t.isucon.dev",
-		PrivateIpv4Address: "10.165.32.102",
-		Status:             resources.ContestantInstance_RUNNING,
-	}
-	ci5323 := &resources.ContestantInstance{
-		CloudId:            "team532-003",
-		TeamId:             9,
-		Number:             3,
-		PublicIpv4Address:  "isu3.t.isucon.dev",
-		PrivateIpv4Address: "10.165.32.103",
-		Status:             resources.ContestantInstance_RUNNING,
-	}
-
-	cis := []*resources.ContestantInstance{ci5301, ci5302, ci5303, ci5311, ci5312, ci5313, ci5321, ci5322, ci5323}
-
-	for _, ci := range cis {
 		req := &portalpb.InformInstanceStateUpdateRequest{
 			Token:    "himitsudayo",
 			Instance: ci,
 		}
+		//if _, err := portalClient.InformInstanceStateUpdate(ctx, req); err != nil {
+		//	return err
+		//}
+
 		fmt.Println(req)
-		if _, err := portalClient.InformInstanceStateUpdate(ctx, req); err != nil {
-			return err
-		}
 	}
 
 	return nil
@@ -206,6 +98,10 @@ func parseVMName(vmName, vmUUID string) (*resources.ContestantInstance, error) {
 
 	if number < 1 || number > 4 {
 		return nil, errors.New("invalid number")
+	}
+
+	if !team.IsAvailable(teamID) {
+		return nil, errors.New("unavailable")
 	}
 
 	base := 160

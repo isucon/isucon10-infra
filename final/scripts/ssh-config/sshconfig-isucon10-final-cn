@@ -304,7 +304,7 @@ Host 10.163.53.*
   StrictHostKeyChecking no
 
 
-Host 10.163.57.*
+Host 10.163.73.*
   User isucon-admin
   ProxyJump isucn0012.hv.x.isucon.dev
   IdentityFile ~/.ssh/id_rsa

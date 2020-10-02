@@ -344,17 +344,17 @@ Host 10.163.53.*
   StrictHostKeyChecking no
 
 
-Host team357-bastion200
+Host team373-bastion200
   User isucon-admin
-  HostName 157.112.65.103
+  HostName 157.112.65.119
   Port 20340
   IdentityFile ~/.ssh/id_rsa
   StrictHostKeyChecking no
 
 
-Host 10.163.57.*
+Host 10.163.73.*
   User isucon-admin
-  ProxyJump team357-bastion200
+  ProxyJump team373-bastion200
   IdentityFile ~/.ssh/id_rsa
   StrictHostKeyChecking no
 

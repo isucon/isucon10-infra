@@ -35,6 +35,7 @@ func main() {
 	doSchedule()
 
 	for _, teamID := range team.GetTeamIDs() {
+		fmt.Printf("team%d: %s\n", teamID, scheduled[teamID])
 		if err := generateTeam(teamID); err != nil {
 			log.Fatal(err)
 		}
@@ -59,9 +60,9 @@ func getBackend(hypervisor string) string {
 func getImageIDs(backend string) (problemImageID, benchImageID, bastionID string) {
 	switch backend {
 	case "dorado001":
-		return "1ab68dff-7d0d-40b5-abff-3ef0db2618b1", "10eee589-725b-4686-a424-1df5e161b031", "5138fee8-59a1-407a-bb84-2937d9705143"
+		return "18021d55-a78b-490e-b8b3-801fdf753136", "783ab7dd-7cae-46c7-9121-53440466fc36", "5138fee8-59a1-407a-bb84-2937d9705143"
 	case "dorado002":
-		return "23e33fcd-1951-4185-ba47-0a6fb1dcf50e", "8dea495b-373e-49ca-9b79-caa63e842c7f", "c453a2ef-9865-4b14-bff2-0a78416ebea5"
+		return "ea2b312a-cbfe-431b-bd6e-f7747a5d3e54", "d8bffc3a-5a76-46e1-a922-bf98a2027833", "c453a2ef-9865-4b14-bff2-0a78416ebea5"
 	default:
 		panic("shiran")
 	}
@@ -81,9 +82,9 @@ func generateTeam(teamID int) error {
 		return fmt.Errorf("failed to write file: %w", err)
 	}
 
-	//if err := terraformInit(teamIDStr); err != nil {
-	//	return fmt.Errorf("failed to terraform init: %w", err)
-	//}
+	if err := terraformInit(teamIDStr); err != nil {
+		return fmt.Errorf("failed to terraform init: %w", err)
+	}
 
 	return nil
 }
@@ -150,19 +151,19 @@ func getSpec(serial int) map[string]interface{} {
 	switch serial {
 	case 1:
 		return map[string]interface{}{
-			"VCPU":     "1",
+			"VCPU":     "2",
 			"MemoryGB": "1",
 			"VolumeGB": "30",
 		}
 	case 2:
 		return map[string]interface{}{
-			"VCPU":     "1",
+			"VCPU":     "2",
 			"MemoryGB": "2",
 			"VolumeGB": "30",
 		}
 	case 3:
 		return map[string]interface{}{
-			"VCPU":     "2",
+			"VCPU":     "4",
 			"MemoryGB": "1",
 			"VolumeGB": "30",
 		}
@@ -388,7 +389,7 @@ resource "lovi_virtual_machine" "bench-team%{TeamID}s" {
 resource "lovi_interface_attachment" "bench-team%{TeamID}s" {
   virtual_machine_id = lovi_virtual_machine.bench-team%{TeamID}s.id
   bridge_id = lovi_bridge.team%{TeamID}s.id
-  average = 12500 // NOTE: 100Mbps
+  average = 125000 // NOTE: 1Gbps
   name = "t%{TeamID}s-be"
   lease_id = lovi_lease.bench-team%{TeamID}s.id
 
